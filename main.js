@@ -37,11 +37,13 @@ function updateLastMessage(lastMessage, lastPseudo) {
 
         tchatHandler.getTchatXml(lastDataFromFile).then(function(response){
 
-            console.log('response main : pseudo'+response['pseudo']+' || msg : '+response['message'])
+            
             
             if(response['pseudo'] != 'NO_DATA'){
 
-            request.post('https://discordapp.com/api/webhooks/706971310701412383/aJ5aEDrwGIKMcMTfut15dl6Fiu0G5Stz5iG-suYgeoBZ2GGYz2gBptYaNVsw1NrCgPGu', {
+                console.log('response main : pseudo'+response['pseudo']+' || msg : '+response['message'])
+
+            request.post('https://discordapp.com/api/webhooks/708351218388435015/PWLB31ajkbpSuGMV9HF55VBdq0v7SRMzOKEuOC8wvfz8Ya_lsuDI2lTmoL1DcbYW3f2C', {
                 json: {
                     content: response['message'], 
                     username : response['pseudo'],

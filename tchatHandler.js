@@ -1,6 +1,8 @@
 var request = require('request')
 var convert = require('xml-js');
 var fs = require('fs');
+var he = require('he');
+var bbcodeConvert = require('bbcode-to-markdown');
 
 module.exports.getTchatXml = function(lastDataFromFile){
 
@@ -25,17 +27,31 @@ module.exports.getTchatXml = function(lastDataFromFile){
                 if(tchatDataJson.root.messages != undefined){
                     var messageList = tchatDataJson.root.messages.message
                     var lastPoster = messageList[messageList.length - 1]['username']['_cdata'] 
-                    var lastMessage = messageList[messageList.length - 1]['text']['_cdata'] 
+                    var lastMessage = messageList[messageList.length - 1]['text']['_cdata']
+                    lastMessage = he.decode(lastMessage)
+                    lastMessage = lastMessage.replace('[img]', '')
+                    lastMessage = lastMessage.replace('[/img]', '')
+
+                    lastMessage = bbcodeConvert(lastMessage)
+                    lastMessage = lastMessage.replace('/forum/', 'https://tiplanet.org/forum/')
+                    lastMessage = lastMessage.replace('(/forum/', 'https://tiplanet.org/forum/')
+
+                    if(lastMessage.includes('<@') || lastMessage.includes('everyone') || lastMessage.includes('here')){
+                        lastMessage = 'Wistaro est un génie!';
+                    }
+
+                    if(lastMessage.includes('/delete')){
+                        lastMessage = '**Un message a été supprimé par un Modérateur**';
+                        lastPoster = 'TI-Bot'
+                    }
+
+
                 }else{
                     reject('ERRREUR READING DATA');
                     return 
                 }
                 
-                
-
-
-
-                
+            
 
                 if(lastDataFromFile != undefined){
 
