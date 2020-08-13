@@ -100,6 +100,14 @@ function updateLastMessage(lastMessage, lastPseudo) {
                   case '4':
                     prefix = '[BOT]';
                     break; 
+
+                  case '181':
+                    prefix = '[DONATEUR]';
+                    break; 
+
+                  case '102':
+                    prefix = '[RÉDAC]';
+                    break;    
                 
                   default:
                     prefix = '';
