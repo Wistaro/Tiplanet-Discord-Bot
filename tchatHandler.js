@@ -26,6 +26,9 @@ module.exports.getTchatXml = function(lastDataFromFile){
 
                 if(tchatDataJson.root.messages != undefined){
                     var messageList = tchatDataJson.root.messages.message
+
+                    var userRole = messageList[messageList.length - 1]['_attributes']['userRole'] 
+                    var userId = messageList[messageList.length - 1]['_attributes']['userID'] 
                     var lastPoster = messageList[messageList.length - 1]['username']['_cdata'] 
                     var lastMessage = messageList[messageList.length - 1]['text']['_cdata']
                     lastMessage = he.decode(lastMessage)
@@ -63,6 +66,8 @@ module.exports.getTchatXml = function(lastDataFromFile){
                         var responseArray = new Object();
                         responseArray['pseudo'] = lastPoster;
                         responseArray['message'] = lastMessage;
+                        responseArray['userId'] = userId;
+                        responseArray['userRole'] = userRole;
 
                         fs.writeFile('lastMessage.log', JSON.stringify(responseArray) , function (err) {
                             if (err) throw err;
@@ -73,10 +78,10 @@ module.exports.getTchatXml = function(lastDataFromFile){
                     }else{
                         var responseArray = new Object();
                         responseArray['pseudo'] = 'NO_DATA';
-                        responseArray['message'] = 'NO _DATA';
+                        responseArray['message'] = 'NO_DATA';
+                        responseArray['userId'] = 'NO_DATA';
+                        responseArray['userRole'] = 'NO_DATA';
 
-                        
-                        
                         fullfil(responseArray);
                     }
                 }

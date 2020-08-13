@@ -5,6 +5,8 @@ var request = require('request')
 var watchr = require('watchr')
 const http = require('http');
 const fs = require('fs');
+const fetch = require("node-fetch");
+
 const bot_token = "Njk5MDQwNTg3NDE1ODE0MTU1.Xq7hYA.2PFHIlAoHejIwEeBkLYdejUwrLI"
 
 var tchatHandler = require('./tchatHandler')
@@ -14,7 +16,7 @@ const channel_log = '706970986842554468'
 var lastMessage = 'ok'
 var lastPseudo = 'ok'
 
-
+var cookieJar = request.jar();
 
 client.on('ready', () => {
 
@@ -22,8 +24,49 @@ client.on('ready', () => {
      client.user.setStatus("available")
      console.log("TI Bot is ready! v4")
 
-     tchatHandler.getTchatXml().then(function(data){
-         console.log(data);
+     
+     var cookieJar = request.jar();
+
+     request.post({ //first request to login
+       url: 'https://tiplanet.org/forum/ucp.php?mode=login',
+       form: {
+       username:'WistaBot_NOP',
+       password:'93215942!',
+       autologin:'on',
+       viewonline:'on',
+       redirect:'/forum/chat',
+       login:'Connexion'
+       },
+       jar: cookieJar
+     
+     }, function(err, httpResponse, body) {
+       if (!err) {
+     
+         console.log('Connexion effectuée.\n')
+     
+         request.post({
+           url: 'https://tiplanet.org/forum/chat/?ajax=true',
+     
+           form: {
+             channelName: 'Public',
+             text: ''
+           },
+     
+           jar: cookieJar
+     
+         }, function(err, httpResponse, body) {
+           if (!err) {
+     
+             console.log("message envoyé!")
+     
+           } else {
+             console.log("error" + err)
+           }
+         })
+     
+       } else {
+         console.log("error" + err)
+       }
      })
 
 
@@ -33,21 +76,41 @@ function updateLastMessage(lastMessage, lastPseudo) {
 
     var lastDataFromFile =  fs.readFileSync('lastMessage.log', 'utf8');
             
-
-
         tchatHandler.getTchatXml(lastDataFromFile).then(function(response){
-
-            
-            
+    
             if(response['pseudo'] != 'NO_DATA'){
 
                 console.log('response main : pseudo'+response['pseudo']+' || msg : '+response['message'])
 
+                var prefix = ''
+
+                switch (response['userRole']) {
+                  case '121':
+                    prefix = '[PREMIUM]';
+                    break;
+
+                  case '42':
+                    prefix = '[MOD+]';
+                    break; 
+                  
+                  case '53':
+                    prefix = '[ADMIN]';
+                    break;    
+                  
+                  case '4':
+                    prefix = '[BOT]';
+                    break; 
+                
+                  default:
+                    prefix = '';
+                    break;
+                }
+
             request.post('https://discordapp.com/api/webhooks/708351218388435015/PWLB31ajkbpSuGMV9HF55VBdq0v7SRMzOKEuOC8wvfz8Ya_lsuDI2lTmoL1DcbYW3f2C', {
                 json: {
                     content: response['message'], 
-                    username : response['pseudo'],
-                    avatar_url : 'https://tiplanet.org//forum/styles/prosilver/theme/images/tiplanet_header_logo.png'
+                    username : prefix+' '+response['pseudo'],
+                    avatar_url : 'https://tiplanet.org/forum/avatar.php?id='+response['userId']
 
                 }
             }, (error, res, body) => {
@@ -63,7 +126,6 @@ function updateLastMessage(lastMessage, lastPseudo) {
 
         })
             
-    
 
 }
 function getLastData(){
@@ -108,11 +170,18 @@ function processCommand(receivedMessage) {
 
     let memberWhoSpeak = receivedMessage.author.username;
 
-    //receivedMessage.channel.send(receivedMessage)
+    if(fullCommand == 'debug'){
+        creceivedMessage.channel.send("test")
+    }
+
+}
+
+function login2Tiplanet(){
 
 }
 
 function sendMessage(title, message){
+
     const embed = new Discord.RichEmbed()
 
     .setAuthor("Wistaro")

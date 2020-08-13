@@ -12,6 +12,7 @@
     "bbcode-to-markdown": "^1.0.1",
     "discord.js": "^11.2.1",
     "he": "^1.2.0",
+    "node-fetch": "^2.6.0",
     "request": "^2.88.2",
     "watchr": "^5.6.0",
     "xml-js": "^1.6.11"
