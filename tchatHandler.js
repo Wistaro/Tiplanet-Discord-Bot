@@ -53,7 +53,6 @@ module.exports.getTchatXml = function(lastDataFromFile){
                     reject('ERRREUR READING DATA');
                     return 
                 }
-                
             
 
                 if(lastDataFromFile != undefined){

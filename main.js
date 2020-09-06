@@ -12,6 +12,7 @@ const bot_token = "Njk5MDQwNTg3NDE1ODE0MTU1.Xq7hYA.2PFHIlAoHejIwEeBkLYdejUwrLI"
 var tchatHandler = require('./tchatHandler')
 
 const channel_log = '706970986842554468'
+const shoutbox_channel = '708351148813451274'
 
 var lastMessage = 'ok'
 var lastPseudo = 'ok'
@@ -24,16 +25,14 @@ client.on('ready', () => {
      client.user.setStatus("available")
      console.log("TI Bot is ready! v4")
 
-     
-     var cookieJar = request.jar();
 
      request.post({ //first request to login
        url: 'https://tiplanet.org/forum/ucp.php?mode=login',
        form: {
-       username:'WistaBot_NOP',
+       username:'WistaBot',
        password:'93215942!',
-       autologin:'on',
-       viewonline:'on',
+       autologin:'true',
+       viewonline:'false',
        redirect:'/forum/chat',
        login:'Connexion'
        },
@@ -49,7 +48,7 @@ client.on('ready', () => {
      
            form: {
              channelName: 'Public',
-             text: ''
+             text: '/msg Wistaro le bot est en ligne!'
            },
      
            jar: cookieJar
@@ -81,6 +80,8 @@ function updateLastMessage(lastMessage, lastPseudo) {
             if(response['pseudo'] != 'NO_DATA'){
 
                 console.log('response main : pseudo'+response['pseudo']+' || msg : '+response['message'])
+
+                if(response['pseudo'] == 'WistaBot' ) return;
 
                 var prefix = ''
 
@@ -159,28 +160,44 @@ client.on("guildCreate", guild => {
  });
 
 client.on('message', (receivedMessage) => {
-    if (receivedMessage.author == client.user) {
+    if (receivedMessage.author == client.user || receivedMessage.webhookID) {
         return
     }
     
-    if (receivedMessage.content.startsWith("!")) {
+    //if (receivedMessage.content.startsWith("!")) {
         processCommand(receivedMessage)
-    }
+    //}
 })
 
 function processCommand(receivedMessage) {
-    let fullCommand = receivedMessage.content.substr(1) 
-    let splitCommand = fullCommand.split(" ") 
-    let primaryCommand = splitCommand[0] 
-    let arguments = splitCommand.slice(1) 
+
 
     let serverGuild = receivedMessage.guild;
+    let channelSource = receivedMessage.channel.id;
 
     let memberWhoSpeak = receivedMessage.author.username;
 
-    if(fullCommand == 'debug'){
-        creceivedMessage.channel.send("test")
-    }
+    if(channelSource != shoutbox_channel) return;
+
+
+    request.post({
+      url: 'https://tiplanet.org/forum/chat/?ajax=true',
+      form: {
+        channelName: 'Public',
+        text: '[b][color=teal][Discord][/color][/b][b]<[color=maroon][url=https://discord.gg/dcsAH6h]'+memberWhoSpeak+'[/url][/color]>[/b] [i][color=block]'+receivedMessage+'[/color][/i]'
+      },
+
+      jar: cookieJar
+
+    }, function(err, httpResponse, body) {
+      if (!err) {
+
+        console.log("message"+receivedMessage+ "envoyé!")
+
+      } else {
+        console.log("error" + err)
+      }
+    }) 
 
 }
 
