@@ -25,8 +25,6 @@ http.createServer(function(req, res) {
 }).listen(8080);
 
 client.on('ready', () => {
-
-     //client.user.setActivity("!tibot help || by Wistaro")
      client.user.setStatus("available")
      console.log("TI Bot is ready! v4")
 
@@ -72,13 +70,11 @@ client.on('ready', () => {
          console.log("error" + err)
        }
      })
-
-
 })
 
 function updateLastMessage(lastMessage, lastPseudo) {
 
-    var lastDataFromFile =  fs.readFileSync('lastMessage.log', 'utf8');
+    var lastDataFromFile =  fs.readFileSync('lastMessage.log', 'utf8'); //todo : async function!
             
         tchatHandler.getTchatXml(lastDataFromFile).then(function(response){
     
@@ -130,7 +126,7 @@ function updateLastMessage(lastMessage, lastPseudo) {
             }, (error, res, body) => {
     
                 if (error) {
-    
+
                      console.error(error)
     
                 }
@@ -142,36 +138,17 @@ function updateLastMessage(lastMessage, lastPseudo) {
             
 
 }
-function getLastData(){
-    return lastMessage;
-} 
-
-function updateLastData(msg){
-    return lastMessage = msg;
-} 
 
 function messageUpdater(){
     updateLastMessage(lastMessage, lastPseudo)
 }
 setInterval(messageUpdater, 1000); 
 
-client.on("guildCreate", guild => {
-    //guild.owner.send('Thanks! You can use **!covid help** to discover commands.\n \n By Wistaro#9487')
-    console.log(`New guild joined: ${guild.name} (id: ${guild.id}). This guild has ${guild.memberCount} members!`);
- });
-
- client.on("guildDelete", guild => {
-    console.log(`Guild kick the bot: ${guild.name} (id: ${guild.id}). This guild has ${guild.memberCount} members!`);
- });
-
 client.on('message', (receivedMessage) => {
     if (receivedMessage.author == client.user || receivedMessage.webhookID) {
         return
-    }
-    
-    //if (receivedMessage.content.startsWith("!")) {
+    }  
         processCommand(receivedMessage)
-    //}
 })
 
 function processCommand(receivedMessage) {
@@ -179,17 +156,20 @@ function processCommand(receivedMessage) {
 
     let serverGuild = receivedMessage.guild;
     let channelSource = receivedMessage.channel.id;
-
+    let msgClean = receivedMessage.cleanContent.replace(/(\r\n|\n|\r)/gm,"");
     let memberWhoSpeak = receivedMessage.author.username;
 
-    if(channelSource != shoutbox_channel) return;
+    let reg = /<(:[0-9A-Za-z]+:)[0-9]+>/gm;
 
+    msgClean = msgClean.replace(reg, "$1");
+
+    if(channelSource != shoutbox_channel) return;
 
     request.post({
       url: 'https://tiplanet.org/forum/chat/?ajax=true',
       form: {
         channelName: 'Public',
-        text: '[b][color=teal][Discord][/color][/b][b]<[color=maroon][url=https://discord.gg/dcsAH6h]'+memberWhoSpeak+'[/url][/color]>[/b] [i][color=block]'+receivedMessage+'[/color][/i]'
+        text: '[b][[color=maroon][url=https://discord.gg/dcsAH6h]'+memberWhoSpeak+'[/url][/color]][/b] [i][color=block]'+msgClean+'[/color][/i]'
       },
 
       jar: cookieJar
@@ -205,25 +185,5 @@ function processCommand(receivedMessage) {
     }) 
 
 }
-
-function login2Tiplanet(){
-
-}
-
-function sendMessage(title, message){
-
-    const embed = new Discord.RichEmbed()
-
-    .setAuthor("Wistaro")
-    .setColor("#EF1616")
-    .setFooter("By Wistaro#9487", "https://i.imgur.com/yMtrkBo.png")
-    //.setThumbnail("https://www.shareicon.net/data/256x256/2017/06/21/887490_logo_512x512.png")
-    .setTitle(title)
-    .setDescription(message)
-
-    client.channels.get(channel_log).send({embed})
-}
-
-
 client.login(bot_token) 
 
