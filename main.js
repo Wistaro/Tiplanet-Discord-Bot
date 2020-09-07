@@ -19,6 +19,11 @@ var lastPseudo = 'ok'
 
 var cookieJar = request.jar();
 
+http.createServer(function(req, res) {
+    res.writeHead(200, {"Content-Type": "text/plain"});
+    res.end('Discord bot for tiplanet.org, by Wistaro. ');
+}).listen(8080);
+
 client.on('ready', () => {
 
      //client.user.setActivity("!tibot help || by Wistaro")
