@@ -14,6 +14,14 @@ var tchatHandler = require('./tchatHandler')
 const channel_log = '706970986842554468'
 const shoutbox_channel = '708351148813451274'
 
+//ROLES
+const roleAdmin = '415190599780532224';
+const roleModo = '339837454519500800';
+const roleModoG = '339837948897918977';
+const rolePremium = '339841307939700747';
+const roleRedac = '339839953515053066';
+const roleAnim = '339840793357451275';
+
 var lastMessage = 'ok'
 var lastPseudo = 'ok'
 
@@ -158,10 +166,31 @@ function processCommand(receivedMessage) {
     let channelSource = receivedMessage.channel.id;
     let msgClean = receivedMessage.cleanContent.replace(/(\r\n|\n|\r)/gm,"");
     let memberWhoSpeak = receivedMessage.author.username;
-
     let reg = /<(:[0-9A-Za-z]+:)[0-9]+>/gm;
+    let colorTchat = 'black'
 
     msgClean = msgClean.replace(reg, "$1");
+
+    if(receivedMessage.member.roles.cache.has(roleAdmin)){
+
+      colorTchat = 'red';
+
+    }else if(receivedMessage.member.roles.cache.has(roleModoG)){
+
+      colorTchat = 'green';
+
+    }else if(receivedMessage.member.roles.cache.has(roleModo)){
+      
+      colorTchat = 'lime';
+
+    }else if(receivedMessage.member.roles.cache.has(roleRedac)){
+      
+      colorTchat = 'blue';
+
+    }else if(receivedMessage.member.roles.cache.has(roleAnim)){
+      
+      colorTchat = 'aqua';
+    }
 
     if(channelSource != shoutbox_channel) return;
 
@@ -169,7 +198,7 @@ function processCommand(receivedMessage) {
       url: 'https://tiplanet.org/forum/chat/?ajax=true',
       form: {
         channelName: 'Public',
-        text: '[b][[color=maroon][url=https://discord.gg/dcsAH6h]'+memberWhoSpeak+'[/url][/color]][/b] [i][color=block]'+msgClean+'[/color][/i]'
+        text: '[b][[color='+colorTchat+']'+memberWhoSpeak+'[/color]][/b] [color=block]'+msgClean+'[/color]'
       },
 
       jar: cookieJar
