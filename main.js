@@ -138,7 +138,7 @@ function keepBotOnlineTip(){
     console.log('Requete pour réveiller le bot sur tip = PAS OK!');
   })
 }
-setInterval(keepBotOnlineTip, 60000); 
+setInterval(keepBotOnlineTip, 20000); 
 
 client.on('message', (receivedMessage) => {
     if (receivedMessage.author == client.user || receivedMessage.webhookID || receivedMessage.author.bot) {
