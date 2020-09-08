@@ -174,7 +174,7 @@ function processCommand(receivedMessage) {
 
     }else if(receivedMessage.member.roles.cache.has(roleModo)){
       
-      colorTchat = 'lime';
+      colorTchat = '#62C927';
 
     }else if(receivedMessage.member.roles.cache.has(roleRedac)){
       
@@ -182,7 +182,7 @@ function processCommand(receivedMessage) {
 
     }else if(receivedMessage.member.roles.cache.has(roleAnim)){
       
-      colorTchat = 'aqua';
+      colorTchat = '#3D58D5';
     }
 
     if(channelSource != shoutbox_channel) return;
