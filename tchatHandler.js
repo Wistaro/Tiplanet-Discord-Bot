@@ -95,10 +95,6 @@ module.exports.getTchatXml = function(lastDataFromFile){
     })
 }
 
-function getOldData(callback){
-    
-}
-
 function convert2json(xmlData){
     return convert.xml2json(xmlData, {compact: true, spaces: 0});
 }

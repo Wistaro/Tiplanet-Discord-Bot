@@ -10,6 +10,7 @@ const fetch = require("node-fetch");
 const bot_token = "Njk5MDQwNTg3NDE1ODE0MTU1.Xq7hYA.2PFHIlAoHejIwEeBkLYdejUwrLI"
 
 var tchatHandler = require('./tchatHandler')
+var ircTip = require('./ircTiplanet')
 
 const channel_log = '706970986842554468'
 const shoutbox_channel = '708351148813451274'
@@ -36,54 +37,25 @@ client.on('ready', () => {
      client.user.setStatus("available")
      console.log("TI Bot is ready! v4")
 
+    ircTip.botLogin().then(function(data){
 
-     request.post({ //first request to login
-       url: 'https://tiplanet.org/forum/ucp.php?mode=login',
-       form: {
-       username:'WistaBot',
-       password:'93215942!',
-       autologin:'true',
-       viewonline:'false',
-       redirect:'/forum/chat',
-       login:'Connexion'
-       },
-       jar: cookieJar
-     
-     }, function(err, httpResponse, body) {
-       if (!err) {
-     
-         console.log('Connexion effectuée.\n')
-     
-         request.post({
-           url: 'https://tiplanet.org/forum/chat/?ajax=true',
-     
-           form: {
-             channelName: 'Public',
-             text: '/msg Wistaro le bot est en ligne!'
-           },
-     
-           jar: cookieJar
-     
-         }, function(err, httpResponse, body) {
-           if (!err) {
-     
-             console.log("message envoyé!")
-     
-           } else {
-             console.log("error" + err)
-           }
-         })
-     
-       } else {
-         console.log("error" + err)
-       }
-     })
+      const embed = new Discord.MessageEmbed()
+      .setAuthor("TI-Bot")
+      .setColor("#EF1616")
+      .setDescription("Le Bot est **en ligne** sur le tchat de TIplanet!")
+  
+      client.channels.cache.get(shoutbox_channel).send({embed});  
+
+      ircTip.sendBotMessage('black','Info', '[i]Connection au serveur Discord effectuée.[/i]').then(function(data){ }).catch(function(err){})
+
+
+    })
 })
 
 function updateLastMessage(lastMessage, lastPseudo) {
 
     var lastDataFromFile =  fs.readFileSync('lastMessage.log', 'utf8'); //todo : async function!
-            
+    
         tchatHandler.getTchatXml(lastDataFromFile).then(function(response){
     
             if(response['pseudo'] != 'NO_DATA'){
@@ -127,7 +99,7 @@ function updateLastMessage(lastMessage, lastPseudo) {
             request.post('https://discordapp.com/api/webhooks/708351218388435015/PWLB31ajkbpSuGMV9HF55VBdq0v7SRMzOKEuOC8wvfz8Ya_lsuDI2lTmoL1DcbYW3f2C', {
                 json: {
                     content: response['message'], 
-                    username : prefix+' '+response['pseudo'],
+                    username : response['pseudo']+' '+prefix,
                     avatar_url : 'https://tiplanet.org/forum/avatar.php?id='+response['userId']
 
                 }
@@ -142,8 +114,11 @@ function updateLastMessage(lastMessage, lastPseudo) {
 
         }
 
-        })
-            
+        }).catch(function(error){
+
+          console.log(error);
+
+        });     
 
 }
 
@@ -152,15 +127,33 @@ function messageUpdater(){
 }
 setInterval(messageUpdater, 1000); 
 
+function keepBotOnlineTip(){
+
+  ircTip.botLogin().then(function(data){
+
+    console.log('Requete pour réveiller le bot sur tip = ok');
+    
+  }).catch(function(err){
+
+    console.log('Requete pour réveiller le bot sur tip = PAS OK!');
+  })
+}
+setInterval(keepBotOnlineTip, 60000); 
+
 client.on('message', (receivedMessage) => {
-    if (receivedMessage.author == client.user || receivedMessage.webhookID) {
+    if (receivedMessage.author == client.user || receivedMessage.webhookID || receivedMessage.author.bot) {
         return
     }  
-        processCommand(receivedMessage)
+        processCommand(receivedMessage)        
 })
 
 function processCommand(receivedMessage) {
 
+  if (receivedMessage.content.startsWith("!")) {
+
+    handleCommand(receivedMessage)
+
+  }else{
 
     let serverGuild = receivedMessage.guild;
     let channelSource = receivedMessage.channel.id;
@@ -194,25 +187,59 @@ function processCommand(receivedMessage) {
 
     if(channelSource != shoutbox_channel) return;
 
-    request.post({
-      url: 'https://tiplanet.org/forum/chat/?ajax=true',
-      form: {
-        channelName: 'Public',
-        text: '[b][[color='+colorTchat+']'+memberWhoSpeak+'[/color]][/b] [color=block]'+msgClean+'[/color]'
-      },
+    ircTip.sendBotMessage(colorTchat,memberWhoSpeak, msgClean).then(function(data){  
 
-      jar: cookieJar
+        console.log('message envoyé!');
 
-    }, function(err, httpResponse, body) {
-      if (!err) {
+    }).catch(function(error){
+      client.channels.cache.get(shoutbox_channel).send('Envoie du message impossible vers le tchat de tiplanet:  '+error);  
+    })
 
-        console.log("message"+receivedMessage+ "envoyé!")
+  }
+}
 
-      } else {
-        console.log("error" + err)
+function handleCommand(receivedMessage){
+
+    let fullCommand = receivedMessage.content.substr(1) 
+    let splitCommand = fullCommand.split(" ") 
+    let primaryCommand = splitCommand[0] 
+    let arguments = splitCommand.slice(1) 
+    let serverGuild = receivedMessage.guild;
+    let memberWhoSpeak = receivedMessage.author.username;
+
+    if (primaryCommand == 'tibot') {
+
+      if(arguments[0] == 'login'){
+
+          ircTip.botLogin().then(function(data){
+
+            const embed = new Discord.MessageEmbed()
+            .setAuthor("TI-Bot")
+            .setColor("#EF1616")
+            .setDescription("Le Bot est **en ligne** sur le tchat de TIplanet!")
+        
+        client.channels.cache.get(shoutbox_channel).send({embed});  
+
+          }).catch(function(error){
+            client.channels.cache.get(shoutbox_channel).send('Impossible de passer le bot en ligne sur le tchat de tiplanet: '+error);  
+          })
+
+      }else if(arguments[0] == 'logout'){
+
+        ircTip.botLogout().then(function(data){
+
+          const embed = new Discord.MessageEmbed()
+          .setAuthor("TI-Bot")
+          .setColor("#EF1616")
+          .setDescription("Le Bot est **HORS LIGNE** sur le tchat de TIplanet!")
+      
+         client.channels.cache.get(shoutbox_channel).send({embed});  
+
+        }).catch(function(error){
+          client.channels.cache.get(shoutbox_channel).send('Impossible de passer le bot en hors ligne sur le tchat de tiplanet: '+error);  
+        })
       }
-    }) 
-
+    }
 }
 client.login(bot_token) 
 
