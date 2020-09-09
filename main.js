@@ -6,6 +6,7 @@ var watchr = require('watchr')
 const http = require('http');
 const fs = require('fs');
 const fetch = require("node-fetch");
+var Watcher  = require('feed-watcher')
 
 const bot_token = "Njk5MDQwNTg3NDE1ODE0MTU1.Xq7hYA.2PFHIlAoHejIwEeBkLYdejUwrLI"
 
@@ -26,12 +27,45 @@ const roleAnim = '339840793357451275';
 var lastMessage = 'ok'
 var lastPseudo = 'ok'
 
+//rss test
+const newsChannel = '742302948687609896'
+const newsFeed = 'https://tiplanet.org/forum/feed.php'
+
+var watcher = new Watcher(newsFeed, 1)
+
+// Start watching the feed.
+watcher
+.start()
+.then(function (entries) {
+  
+})
+.catch(function(error) {
+console.error(error)
+})
+
+// Stop watching the feed.
+//watcher.stop()
+
 var cookieJar = request.jar();
 
 http.createServer(function(req, res) {
     res.writeHead(200, {"Content-Type": "text/plain"});
     res.end('Discord bot for tiplanet.org, by Wistaro. ');
 }).listen(8080);
+
+// Check for new entries every n seconds.
+watcher.on('new entries', function (entries) {
+  entries.forEach(function (entry) {
+
+    console.log(entry);
+    const embed = new Discord.MessageEmbed()
+    .setAuthor("Nouveau message sur le forum!")
+    .setColor("#EF1616")
+    .setDescription('['+entry.title+']('+entry.link+')\n **Auteur:** '+entry.author+'\n'+'**Date:**:'+entry.date)
+
+    client.channels.cache.get(newsChannel).send({embed});  
+  })
+  })
 
 client.on('ready', () => {
      client.user.setStatus("available")
