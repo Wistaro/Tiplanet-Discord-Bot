@@ -20,7 +20,7 @@ module.exports.botLogin = function(){
             password:passBot,
             autologin:'true',
             viewonline:'true',
-            redirect:'/forum/chat',
+            redirect:'',
             login:'Connexion'
             },
             jar: cookieJar
@@ -66,15 +66,22 @@ module.exports.botLogout = function(){
             })
         });
 }
-module.exports.sendBotMessage = function(colorTchat,memberWhoSpeak, msgClean){
+module.exports.sendBotMessage = function(colorTchat,memberWhoSpeak, msgClean, channel){
     
     return new Promise(function(fullfil, reject){
 
+      let text2post;
+      
+      if (msgClean == '') {
+        text2post = ''
+      }else{
+        text2post = '[b][color='+colorTchat+']'+memberWhoSpeak+'[/color][/b]: [color=block]'+msgClean+'[/color]'
+      }
         request.post({
             url: 'https://tiplanet.org/forum/chat/?ajax=true',
             form: {
-              channelName: 'Public',
-              text: '[b][color='+colorTchat+']'+memberWhoSpeak+'[/color][/b]: [color=block]'+msgClean+'[/color]'
+              channelName: channel,
+              text: text2post
             },
       
             jar: cookieJar
@@ -82,7 +89,6 @@ module.exports.sendBotMessage = function(colorTchat,memberWhoSpeak, msgClean){
           }, function(err, httpResponse, body) {
             if (!err) {
       
-              console.log("message"+msgClean+ "envoyé!")
               fullfil('ok');
       
             } else {

@@ -80,7 +80,7 @@ client.on('ready', () => {
   
       client.channels.cache.get(shoutbox_channel).send({embed});  
 
-      ircTip.sendBotMessage('black','Info', '[i]Connection au serveur Discord effectuée.[/i]').then(function(data){ }).catch(function(err){})
+      ircTip.sendBotMessage('black','Info', '[i]Connection au serveur Discord effectuée.[/i]', 'Public').then(function(data){ }).catch(function(err){})
 
 
     })
@@ -165,7 +165,15 @@ function keepBotOnlineTip(){
 
   ircTip.botLogin().then(function(data){
 
-    console.log('Requete pour réveiller le bot sur tip = ok');
+    ircTip.sendBotMessage('','', '', '').then(function(data){  
+      var today = new Date();
+      console.log('Wakeup request: Done at '+today.toString());
+
+  }).catch(function(error){
+    client.channels.cache.get(shoutbox_channel).send('Envoie du message impossible vers le tchat de tiplanet:  '+error);  
+  })
+
+    
     
   }).catch(function(err){
 
@@ -221,9 +229,7 @@ function processCommand(receivedMessage) {
 
     if(channelSource != shoutbox_channel) return;
 
-    ircTip.sendBotMessage(colorTchat,memberWhoSpeak, msgClean).then(function(data){  
-
-        console.log('message envoyé!');
+    ircTip.sendBotMessage(colorTchat,memberWhoSpeak, msgClean, 'Public').then(function(data){  
 
     }).catch(function(error){
       client.channels.cache.get(shoutbox_channel).send('Envoie du message impossible vers le tchat de tiplanet:  '+error);  
