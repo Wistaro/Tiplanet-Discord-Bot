@@ -3,12 +3,13 @@ var convert = require('xml-js');
 var fs = require('fs');
 var he = require('he');
 var bbcodeConvert = require('bbcode-to-markdown');
+var config = require('./config')
 
 module.exports.getTchatXml = function(lastDataFromFile){
 
     return new Promise(function(fullfil, reject){
 
-        request.post('https://tiplanet.org/forum/chat/?ajax=true&shoutbox=true', {
+        request.post(config.getTchatUrl, {
             json: {
                 Host: 'tiplanet.org',          
             }

@@ -1,26 +1,22 @@
-var Watcher  = require('feed-watcher'),
-feed     = 'http://lorem-rss.herokuapp.com/feed?unit=second&interval=5',
-interval = 10 // seconds
+var Watcher  = require('feed-watcher')
+var discord = require('./discord')
 
-// if not interval is passed, 60s would be set as default interval.
-var watcher = new Watcher(feed, interval)
+const newMessagesFeed = 'https://tiplanet.org/forum/feed.php'
 
-// Check for new entries every n seconds.
-watcher.on('new entries', function (entries) {
-entries.forEach(function (entry) {
-console.log(entry.title)
-})
-})
+var watcher = new Watcher(newMessagesFeed, 2)
 
-// Start watching the feed.
 watcher
 .start()
 .then(function (entries) {
-console.log(entries)
+    console.error('Newsfeed engine started')
 })
 .catch(function(error) {
-console.error(error)
+    console.error('NewFeed Error: '+error)
 })
 
-// Stop watching the feed.
-watcher.stop()
+// Check for new entries every n seconds.
+watcher.on('new entries', function (entries) {
+    entries.forEach(function (entry) {
+      discord.sendEmbed('['+entry.title+']('+entry.link+')\n **Auteur:** '+entry.author+'\n'+'**Date:**:'+entry.date, newsChannel); 
+   })
+  })

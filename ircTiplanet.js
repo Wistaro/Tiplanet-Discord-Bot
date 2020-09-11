@@ -1,10 +1,6 @@
 var request = require('request')
-
-const psdBot = 'WistaBot'
-const passBot = '93215942!'
-
-const loginUrl = 'https://tiplanet.org/forum/ucp.php?mode=login'
-const logoutUrl = 'https://tiplanet.org/forum/ucp.php?mode=logout';
+var credentials = require('./credentials')
+var config = require('./config')
 
 var cookieJar = request.jar();
 
@@ -14,10 +10,10 @@ module.exports.botLogin = function(){
 
         request.post({ //first request to 
             
-            url: loginUrl,
+            url: config.websiteLoginUrl,
             form: {
-            username:psdBot,
-            password:passBot,
+            username:credentials.psdBot,
+            password:credentials.passBot,
             autologin:'true',
             viewonline:'true',
             redirect:'',
@@ -78,7 +74,7 @@ module.exports.sendBotMessage = function(colorTchat,memberWhoSpeak, msgClean, ch
         text2post = '[b][color='+colorTchat+']'+memberWhoSpeak+'[/color][/b]: [color=block]'+msgClean+'[/color]'
       }
         request.post({
-            url: 'https://tiplanet.org/forum/chat/?ajax=true',
+            url: config.tchatPostUrl,
             form: {
               channelName: channel,
               text: text2post
