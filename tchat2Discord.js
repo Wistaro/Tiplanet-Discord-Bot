@@ -3,9 +3,14 @@ var convert = require('xml-js');
 var fs = require('fs');
 var he = require('he');
 var bbcodeConvert = require('bbcode-to-markdown');
-var config = require('./config')
 
-module.exports.getTchatXml = function(lastDataFromFile){
+var config = require('./config')
+var discord = require('./discord')
+
+var lastMessage = 'ok'
+var lastPseudo = 'ok'
+
+function getTchatXml(lastDataFromFile){
 
     return new Promise(function(fullfil, reject){
 
@@ -49,6 +54,7 @@ module.exports.getTchatXml = function(lastDataFromFile){
                             lastMessage = '**Un message a été supprimé par un Modérateur**';
                             lastPoster = 'TI-Bot'
                         }
+
 
                     }else{
                         reject('Impossible de lire les données');
@@ -96,6 +102,75 @@ module.exports.getTchatXml = function(lastDataFromFile){
     })
 }
 
+function getLastMessage(lastMessage, lastPseudo) {
+
+    var lastDataFromFile =  fs.readFileSync('lastMessage.log', 'utf8'); //todo : async function!
+    
+        getTchatXml(lastDataFromFile).then(function(response){
+    
+            if(response['pseudo'] != 'NO_DATA'){
+
+                console.log('response main : pseudo'+response['pseudo']+' || msg : '+response['message'])
+
+                if(response['pseudo'] == 'WistaBot' || response['pseudo'] == 'TI-Bot') return;
+
+                var prefix = ''
+
+                switch (response['userRole']) {
+                  case '121':
+                    prefix = '[PREMIUM]';
+                    break;
+
+                  case '42':
+                    prefix = '[MOD+]';
+                    break; 
+                  
+                  case '53':
+                    prefix = '[ADMIN]';
+                    break;    
+                  
+                  case '4':
+                    prefix = '[BOT]';
+                    break; 
+
+                  case '181':
+                    prefix = '[DONATEUR]';
+                    break; 
+
+                  case '102':
+                    prefix = '[RÉDAC]';
+                    break; 
+                    
+                  case '221':
+                    prefix = '[PROG]';
+                    break; 
+                
+                  default:
+                    prefix = '';
+                    break;
+                }
+
+                discord.weebhookPost(response['message'], response['pseudo']+' '+prefix, 'https://tiplanet.org/forum/avatar.php?id='+response['userId'])
+        }
+
+        }).catch(function(error){
+
+          console.log(error);
+
+        });     
+
+}
+
+function messageUpdater(){
+    getLastMessage(lastMessage, lastPseudo)
+}
+setInterval(messageUpdater, 1000); 
+
 function convert2json(xmlData){
     return convert.xml2json(xmlData, {compact: true, spaces: 0});
+}
+
+module.exports = {
+    getLastMessage, 
+    getTchatXml
 }

@@ -14,11 +14,8 @@ watcher
     console.error('NewFeed Error: '+error)
 })
 
-// Check for new entries every n seconds.
 watcher.on('new entries', function (entries) {
     entries.forEach(function (entry) {
-
-        console.log(entry);
       discord.sendEmbed('['+entry.title+']('+entry.link+')\n **Auteur:** '+entry.author+'\n'+'**Date:**:'+entry.date, discord.newsChannel); 
    })
   })

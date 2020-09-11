@@ -8,7 +8,7 @@ module.exports.botLogin = function(){
     
     return new Promise(function(fullfil, reject){
 
-        request.post({ //first request to 
+        request.post({ 
             
             url: config.websiteLoginUrl,
             form: {
