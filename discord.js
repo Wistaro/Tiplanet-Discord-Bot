@@ -72,9 +72,7 @@ function weebhookPost(data, username, avatar){
     }, (error, res, body) => {
 
         if (error) {
-
              console.error('Send webhook error: '+error)
-
         }
     })
 
@@ -178,5 +176,7 @@ client.login(credentials.discordBotToken)
 module.exports = {
     sendMessage,
     sendEmbed, 
-    weebhookPost
+    weebhookPost, 
+    newsChannel
+    
 }

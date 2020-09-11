@@ -17,6 +17,8 @@ watcher
 // Check for new entries every n seconds.
 watcher.on('new entries', function (entries) {
     entries.forEach(function (entry) {
-      discord.sendEmbed('['+entry.title+']('+entry.link+')\n **Auteur:** '+entry.author+'\n'+'**Date:**:'+entry.date, newsChannel); 
+
+        console.log(entry);
+      discord.sendEmbed('['+entry.title+']('+entry.link+')\n **Auteur:** '+entry.author+'\n'+'**Date:**:'+entry.date, discord.newsChannel); 
    })
   })
