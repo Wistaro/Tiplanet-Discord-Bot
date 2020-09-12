@@ -36,10 +36,6 @@ client.on('message', (receivedMessage) => {
     if (receivedMessage.author == client.user || receivedMessage.author.bot) {
         return
     }  
-
-    if(receivedMessage.webhookID != webhookIdrc ){ //bypass the irc webhook by Adriweb
-      return 
-    }
         processCommand(receivedMessage)        
 })
 
@@ -96,7 +92,7 @@ function processCommand(receivedMessage) {
     handleCommand(receivedMessage)
 
   }else{
-
+    console.log('message envoyé!');
     let serverGuild = receivedMessage.guild;
     let channelSource = receivedMessage.channel.id;
     let msgClean = receivedMessage.cleanContent.replace(/(\r\n|\n|\r)/gm,"");
@@ -136,6 +132,7 @@ function processCommand(receivedMessage) {
     discordToTchat.sendBotMessage(colorTchat,memberWhoSpeak, msgClean, 'Public').then(function(data){  
 
     }).catch(function(error){
+
       client.channels.cache.get(shoutbox_channel).send('Envoie du message impossible vers le tchat de tiplanet:  '+error);  
     })
 
