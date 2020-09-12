@@ -17,10 +17,10 @@ const tiBotVersion = "1.6"
 
 
 
-http.createServer(function(req, res) {
+/*http.createServer(function(req, res) {
     res.writeHead(200, {"Content-Type": "text/plain"});
     res.end('Discord bot for tiplanet.org, by Wistaro. ');
-}).listen(8080);
+}).listen(8080);*/
 
 
 
