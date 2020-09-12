@@ -37,8 +37,6 @@ function keepBotOnlineTip(){
     discord.sendMessage('Envoie du message impossible vers le tchat de tiplanet:  '+error, shoutbox_channel)
 
   })
-
-    
     
   }).catch(function(err){
 
@@ -47,4 +45,18 @@ function keepBotOnlineTip(){
 }
 setInterval(keepBotOnlineTip, 20000); 
 
+function promoteDiscordServer(){
 
+  discord2Tchat.botLogin().then(function(data){
+
+    discord2Tchat.sendBotMessage('blue','Discord', 'TIplanet est également sur Discord :bj: ►► https://discord.gg/AfBEHub', 'Public').then(function(data){  
+
+    }).catch(function(error){
+
+     discord.sendMessage('Envoie du message impossible vers le tchat de tiplanet:  '+error, shoutbox_channel)
+
+    })
+  })
+}
+
+setInterval(promoteDiscordServer, 10800000); //every 3h

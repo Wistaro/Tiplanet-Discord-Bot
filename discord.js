@@ -14,6 +14,8 @@ const channel_log = '706970986842554468'
 const shoutbox_channel = '708351148813451274'
 const newsChannel = '742302948687609896'
 const botLogChannel = '754050294387572817'
+const rulesChannel = '754336130677342228'
+const botInfoChannel = '754352846542995526'
 
 //Discord roles
 const roleAdmin = '415190599780532224';
@@ -24,14 +26,20 @@ const roleRedac = '339839953515053066';
 const roleAnim = '339840793357451275';
 const roleProg = '339842895333031936';
 
+const webhookIdrc = '753785049970901114'
+
 const webhookUrl = 'https://discordapp.com/api/webhooks/708351218388435015/PWLB31ajkbpSuGMV9HF55VBdq0v7SRMzOKEuOC8wvfz8Ya_lsuDI2lTmoL1DcbYW3f2C';
 
 
 
 client.on('message', (receivedMessage) => {
-    if (receivedMessage.author == client.user || receivedMessage.webhookID || receivedMessage.author.bot) {
+    if (receivedMessage.author == client.user || receivedMessage.author.bot) {
         return
     }  
+
+    if(receivedMessage.webhookID != webhookIdrc ){ //bypass the irc webhook by Adriweb
+      return 
+    }
         processCommand(receivedMessage)        
 })
 
@@ -149,7 +157,7 @@ function handleCommand(receivedMessage){
 
         discordToTchat.botLogin().then(function(data){
 
-            sendEmbed("Le Bot est **en ligne** sur le tchat de TIplanet!", botLogChannel)
+            sendEmbed("Le Bot est désormais **en ligne** sur le tchat de TIplanet!", botLogChannel)
 
           }).catch(function(error){
 
@@ -158,18 +166,37 @@ function handleCommand(receivedMessage){
 
       }else if(arguments[0] == 'logout'){
 
-        ircTip.botLogout().then(function(data){
+        discordToTchat.botLogout().then(function(data){
 
-          const embed = new Discord.MessageEmbed()
-          .setAuthor("TI-Bot")
-          .setColor("#EF1616")
-          .setDescription("Le Bot est **HORS LIGNE** sur le tchat de TIplanet!")
-      
-         client.channels.cache.get(shoutbox_channel).send({embed});  
+          sendEmbed("Le Bot est désormais **HORS LIGNE** sur le tchat de TIplanet!", botLogChannel)
 
         }).catch(function(error){
           client.channels.cache.get(shoutbox_channel).send('Impossible de passer le bot en hors ligne sur le tchat de tiplanet: '+error);  
         })
+      }else if(arguments[0] == 'postRules'){
+
+        if(receivedMessage.member.roles.cache.has(roleAdmin) || receivedMessage.member.roles.cache.has(roleModoG)){
+
+          const embed = new Discord.MessageEmbed()
+          .setAuthor("Discord rules")
+          .setColor("#EF1616")
+          .setDescription(receivedMessage.toString().substring(16))
+      
+         client.channels.cache.get(rulesChannel).send({embed});  
+        }
+
+      }else if(arguments[0] == 'postBotInfo'){
+
+        if(receivedMessage.member.roles.cache.has(roleAdmin) || receivedMessage.member.roles.cache.has(roleModoG)){
+
+          const embed = new Discord.MessageEmbed()
+          .setAuthor("Informations sur les Bots / Bots informations")
+          .setColor("#EF1616")
+          .setDescription(receivedMessage.toString().substring(18))
+      
+         client.channels.cache.get(botInfoChannel).send({embed});  
+        }
+
       }
     }
 }

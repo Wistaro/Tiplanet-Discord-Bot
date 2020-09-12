@@ -40,12 +40,12 @@ module.exports.botLogout = function(){
     
     return new Promise(function(fullfil, reject){
 
-        request.post({ //first request to 
+        request.post({ 
             
-            url: logoutUrl,
+            url: config.websiteLogoutUrl,
             form: {
-            username:psdBot,
-            password:passBot,
+            username:credentials.psdBot,
+            password:credentials.passBot,
             },
             jar: cookieJar
           
