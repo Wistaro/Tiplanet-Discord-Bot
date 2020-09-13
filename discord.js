@@ -34,10 +34,18 @@ const webhookUrl = 'https://discordapp.com/api/webhooks/708351218388435015/PWLB3
 
 
 client.on('message', (receivedMessage) => {
-    if (receivedMessage.author == client.user || receivedMessage.author.bot) {
-        return
-    }  
-        processCommand(receivedMessage)        
+
+  let webHookId = receivedMessage.webhookID;
+  let channelSource = receivedMessage.channel.id;
+
+  console.log('Message: '+receivedMessage+' webhookID: '+webHookId+' source: '+channelSource);
+
+  if(receivedMessage.author == client.user || ( channelSource != shoutbox_channel && webHookId != webhookIdrc) || ( receivedMessage.author.bot && webHookId != webhookIdrc ) ){
+    
+    return
+
+  }
+        processMessage(receivedMessage)        
 })
 
 client.on('ready', () => {
@@ -86,49 +94,57 @@ function weebhookPost(data, username, avatar){
     })
 
 }
-function processCommand(receivedMessage) {
+function processMessage(receivedMessage) {
 
   if (receivedMessage.content.startsWith("!")) {
 
     handleCommand(receivedMessage)
 
   }else{
-    console.log('message envoyé!');
     let serverGuild = receivedMessage.guild;
-    let channelSource = receivedMessage.channel.id;
     let msgClean = receivedMessage.cleanContent.replace(/(\r\n|\n|\r)/gm,"");
     let memberWhoSpeak = receivedMessage.author.username;
+    let webHookId = receivedMessage.webhookID;
+
+
     let reg = /<(:[0-9A-Za-z]+:)[0-9]+>/gm;
     let colorTchat = 'black'
 
     msgClean = msgClean.replace(reg, "$1");
 
-    if(receivedMessage.member.roles.cache.has(roleAdmin)){
+    if(webHookId != webhookIdrc){
 
-      colorTchat = 'red';
+      if(receivedMessage.member.roles.cache.has(roleAdmin)){
 
-    }else if(receivedMessage.member.roles.cache.has(roleModoG)){
+        colorTchat = 'red';
 
-      colorTchat = 'green';
+      }else if(receivedMessage.member.roles.cache.has(roleModoG)){
 
-    }else if(receivedMessage.member.roles.cache.has(roleModo)){
-      
-      colorTchat = '#62C927';
+        colorTchat = 'green';
 
-    }else if(receivedMessage.member.roles.cache.has(roleRedac)){
-      
-      colorTchat = 'blue';
+      }else if(receivedMessage.member.roles.cache.has(roleModo)){
+        
+        colorTchat = '#62C927';
 
-    }else if(receivedMessage.member.roles.cache.has(roleAnim)){
-      
-      colorTchat = '#3D58D5';
+      }else if(receivedMessage.member.roles.cache.has(roleRedac)){
+        
+        colorTchat = 'blue';
 
-    }else if(receivedMessage.member.roles.cache.has(roleProg)){
-      
-        colorTchat = '#F730CD';
+      }else if(receivedMessage.member.roles.cache.has(roleAnim)){
+        
+        colorTchat = '#3D58D5';
+
+      }else if(receivedMessage.member.roles.cache.has(roleProg)){
+        
+          colorTchat = '#F730CD';
       }
 
-    if(channelSource != shoutbox_channel) return;
+    }else{
+
+      colorTchat = 'black';
+      memberWhoSpeak  = '[IRC] '+memberWhoSpeak;
+
+    }    
 
     discordToTchat.sendBotMessage(colorTchat,memberWhoSpeak, msgClean, 'Public').then(function(data){  
 
