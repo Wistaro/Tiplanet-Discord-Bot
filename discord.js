@@ -16,6 +16,7 @@ const newsChannel = '742302948687609896'
 const botLogChannel = '754050294387572817'
 const rulesChannel = '754336130677342228'
 const botInfoChannel = '754352846542995526'
+const newArticlesChannel = '754399094952165406'
 
 //Discord roles
 const roleAdmin = '415190599780532224';
@@ -205,6 +206,7 @@ module.exports = {
     sendMessage,
     sendEmbed, 
     weebhookPost, 
-    newsChannel
+    newsChannel, 
+    newArticlesChannel
     
 }
