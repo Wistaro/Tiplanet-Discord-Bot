@@ -10,6 +10,35 @@ var discord = require('./discord')
 var lastMessage = 'ok'
 var lastPseudo = 'ok'
 
+function replaceTextFromMessage(text) {
+	text = text.replace('[img]', '')
+			   .replace('[/img]', '');
+				
+	// From TIP (client-side)		
+    text = text.replace(/merde/gi, 'saperlipopette').replace(/bordel/gi, 'sapristi')
+               .replace(/foutre/gi, 'faire').replace(/chiant/gi, 'très embêtant')
+               .replace(/couille/gi, 'bonbon')
+               .replace(/puta?in+/gi, ["fichtre","diantre"][Math.random()<.5|0])
+
+               .replace(/pre[nt]ium/gi, 'pre[color=red][u][b]m[/b][/u][/color]ium')
+               .replace(/bonjours+/gi, 'bonjou[color=red][u][b]r[/b][/u][/color]')
+               .replace(/(ce|le|un|du) jeux/gi, '$1 jeu[color=red][s][b]x[/b][/s][/color]')
+
+               .replace(/enfaite/gi, 'en fait')
+
+               .replace('&gt;:]', '/forum/images/smilies/devilish.png')
+
+               .replace(':-&gt;:', '→');
+	
+	
+	text = text.replace('/forum/', 'https://tiplanet.org/forum/')
+			   .replace('(/forum/', 'https://tiplanet.org/forum/');
+
+	text = bbcodeConvert(text);
+	
+    return text;
+};
+
 function getTchatXml(lastDataFromFile){
 
     return new Promise(function(fullfil, reject){
@@ -38,13 +67,8 @@ function getTchatXml(lastDataFromFile){
                         var userId = messageList[messageList.length - 1]['_attributes']['userID'] 
                         var lastPoster = messageList[messageList.length - 1]['username']['_cdata'] 
                         var lastMessage = messageList[messageList.length - 1]['text']['_cdata']
-                        lastMessage = he.decode(lastMessage)
-                        lastMessage = lastMessage.replace('[img]', '')
-                        lastMessage = lastMessage.replace('[/img]', '')
 
-                        lastMessage = bbcodeConvert(lastMessage)
-                        lastMessage = lastMessage.replace('/forum/', 'https://tiplanet.org/forum/')
-                        lastMessage = lastMessage.replace('(/forum/', 'https://tiplanet.org/forum/')
+                        lastMessage = replaceTextFromMessage(he.decode(lastMessage))
 
                         if(lastMessage.includes('<@') || lastMessage.includes('everyone') || lastMessage.includes('here')){
                             lastMessage = 'Wistaro est un génie!';
@@ -117,33 +141,49 @@ function getLastMessage(lastMessage, lastPseudo) {
                 var prefix = ''
 
                 switch (response['userRole']) {
-                  case '121':
-                    prefix = '[PREMIUM]';
+                  case '53':
+                    prefix = '[ADMIN]';
                     break;
 
                   case '42':
                     prefix = '[MOD+]';
-                    break; 
-                  
-                  case '53':
-                    prefix = '[ADMIN]';
-                    break;    
-                  
-                  case '4':
-                    prefix = '[BOT]';
-                    break; 
+                    break;
+
+                  case '102':
+                    prefix = '[MOD]';
+                    break;
+
+                  case '171':
+                    prefix = '[MEMBRE UPECS]';
+                    break;
+					
+                  case '121':
+                    prefix = '[PREMIUM]';
+                    break;
+
+                  case '261':
+                    prefix = '[VIP++]';
+                    break;
 
                   case '181':
                     prefix = '[DONATEUR]';
-                    break; 
+                    break;
 
-                  case '102':
+                  case '271':
+                    prefix = '[OMEGA]';
+                    break;
+
+                  case '82':
                     prefix = '[RÉDAC]';
-                    break; 
+                    break;
+                    
+                  case '202':
+                    prefix = '[AMBIANCEUR]';
+                    break;
                     
                   case '221':
                     prefix = '[PROG]';
-                    break; 
+                    break;
                 
                   default:
                     prefix = '';
@@ -154,11 +194,8 @@ function getLastMessage(lastMessage, lastPseudo) {
         }
 
         }).catch(function(error){
-
           console.log(error);
-
-        });     
-
+        });
 }
 
 function messageUpdater(){
