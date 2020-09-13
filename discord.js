@@ -38,6 +38,17 @@ client.on('message', (receivedMessage) => {
   let webHookId = receivedMessage.webhookID;
   let channelSource = receivedMessage.channel.id;
 
+  let filter = msg => {
+    return msg.content.toLowerCase() == receivedMessage.content.toLowerCase()
+  }
+
+  receivedMessage.channel.awaitMessages(filter, {
+    maxMatches: 1, 
+    time: 500
+    }).then(collected => {
+      console.log('Le Bot essaie de spam!');
+    }).catch(console.error);
+
   console.log('Message: '+receivedMessage+' webhookID: '+webHookId+' source: '+channelSource);
 
   if(receivedMessage.author == client.user || ( channelSource != shoutbox_channel && webHookId != webhookIdrc) || ( receivedMessage.author.bot && webHookId != webhookIdrc ) ){
@@ -102,7 +113,9 @@ function processMessage(receivedMessage) {
 
   }else{
     let serverGuild = receivedMessage.guild;
-    let msgClean = receivedMessage.cleanContent.replace(/(\r\n|\n|\r)/gm,"");
+
+    let msgClean = receivedMessage.cleanContent.replace(/>([ a-zA-Z0-9\[\]]+)(\n)?\n(@[\[\]a-zA-Z0-9# ]+)(\n)?([ a-zA-Z0-9]+)/gm, "[quote=$3]$1[/quote] : $5");
+    msgClean = msgClean.replace(/(\r\n|\n|\r)/gm,"");
     let memberWhoSpeak = receivedMessage.author.username;
     let webHookId = receivedMessage.webhookID;
 
