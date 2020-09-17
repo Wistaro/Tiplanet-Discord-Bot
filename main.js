@@ -59,4 +59,4 @@ function promoteDiscordServer(){
   })
 }
 
-setInterval(promoteDiscordServer, 10800000); //every 3h
+setInterval(promoteDiscordServer, 18000000); //every 5h

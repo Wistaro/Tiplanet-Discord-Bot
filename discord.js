@@ -68,7 +68,7 @@ client.on('ready', () => {
 
      sendEmbed("Le Bot est **en ligne** sur le tchat de TIplanet!", botLogChannel);
 
-     discordToTchat.sendBotMessage('black','Info', '[i]Connection au serveur Discord effectuée.[/i]', 'Public').then(function(data){ }).catch(function(err){})
+     //discordToTchat.sendBotMessage('black','Info', '[i]Connection au serveur Discord effectuée.[/i]', 'Public').then(function(data){ }).catch(function(err){})
 
 
    })

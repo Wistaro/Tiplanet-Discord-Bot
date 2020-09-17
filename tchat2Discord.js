@@ -28,7 +28,9 @@ function replaceTextFromMessage(text) {
 
                .replace('&gt;:]', '/forum/images/smilies/devilish.png')
 
-               .replace(':-&gt;:', '→');
+               .replace(':-&gt;:', '→')
+
+               .replace('@', '[at]');
 	
 	
 	text = text.replace('/forum/', 'https://tiplanet.org/forum/')
@@ -69,10 +71,6 @@ function getTchatXml(lastDataFromFile){
                         var lastMessage = messageList[messageList.length - 1]['text']['_cdata']
 
                         lastMessage = replaceTextFromMessage(he.decode(lastMessage))
-
-                        if(lastMessage.includes('<@') || lastMessage.includes('everyone') || lastMessage.includes('here')){
-                            lastMessage = 'Wistaro est un génie!';
-                        }
 
                         if(lastMessage.includes('/delete')){
                             lastMessage = '**Un message a été supprimé par un Modérateur**';
