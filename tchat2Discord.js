@@ -15,7 +15,7 @@ function replaceTextFromMessage(text) {
 			   .replace('[/img]', '');
 				
 	// From TIP (client-side)		
-    text = text.replace(/merde/gi, 'saperlipopette').replace(/bordel/gi, 'sapristi')
+    	text = text.replace(/merde/gi, 'saperlipopette').replace(/bordel/gi, 'sapristi')
                .replace(/foutre/gi, 'faire').replace(/chiant/gi, 'très embêtant')
                .replace(/couille/gi, 'bonbon')
                .replace(/puta?in+/gi, ["fichtre","diantre"][Math.random()<.5|0])
@@ -33,8 +33,8 @@ function replaceTextFromMessage(text) {
                .replace('@', '[at]');
 	
 	
-	text = text.replace('/forum/', 'https://tiplanet.org/forum/')
-			   .replace('(/forum/', 'https://tiplanet.org/forum/');
+	text = text.replace('[url=/forum/', '[url=https://tiplanet.org/forum/')
+		   .replace(/@everyone|@here/gi, 'Wistaro est un génie!');
 
 	text = bbcodeConvert(text);
 	

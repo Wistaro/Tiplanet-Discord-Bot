@@ -9,4 +9,6 @@ Discord bot to interconnect tiplanet.org and its Discord server.
 ---
 
 **Developped by Wistaro**   
-*Wistaro#9487 (173793480697446400)*
+*Wistaro#9487 (173793480697446400)*     
+  
+*Thanks to Adriweb and Anonyme0*
