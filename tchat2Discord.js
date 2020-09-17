@@ -15,7 +15,7 @@ function replaceTextFromMessage(text) {
 			   .replace('[/img]', '');
 				
 	// From TIP (client-side)		
-    text = text.replace(/merde/gi, 'saperlipopette').replace(/bordel/gi, 'sapristi')
+    	text = text.replace(/merde/gi, 'saperlipopette').replace(/bordel/gi, 'sapristi')
                .replace(/foutre/gi, 'faire').replace(/chiant/gi, 'très embêtant')
                .replace(/couille/gi, 'bonbon')
                .replace(/puta?in+/gi, ["fichtre","diantre"][Math.random()<.5|0])
@@ -31,8 +31,8 @@ function replaceTextFromMessage(text) {
                .replace(':-&gt;:', '→');
 	
 	
-	text = text.replace('/forum/', 'https://tiplanet.org/forum/')
-			   .replace('(/forum/', 'https://tiplanet.org/forum/');
+	text = text.replace(/\/forum\//gi, 'https://tiplanet.org/forum/')
+		   .replace(/@everyone|@here/gi, 'Wistaro est un génie!');
 
 	text = bbcodeConvert(text);
 	
@@ -69,10 +69,6 @@ function getTchatXml(lastDataFromFile){
                         var lastMessage = messageList[messageList.length - 1]['text']['_cdata']
 
                         lastMessage = replaceTextFromMessage(he.decode(lastMessage))
-
-                        if(lastMessage.includes('<@') || lastMessage.includes('everyone') || lastMessage.includes('here')){
-                            lastMessage = 'Wistaro est un génie!';
-                        }
 
                         if(lastMessage.includes('/delete')){
                             lastMessage = '**Un message a été supprimé par un Modérateur**';
