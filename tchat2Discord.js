@@ -34,7 +34,7 @@ function replaceTextFromMessage(text) {
 	
 	
 	text = text.replace('[url=/forum/', '[url=https://tiplanet.org/forum/')
-		   .replace(/@everyone|@here/gi, 'Wistaro est un génie!');
+		   
 
 	text = bbcodeConvert(text);
 	
