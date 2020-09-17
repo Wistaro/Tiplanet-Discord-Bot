@@ -31,7 +31,7 @@ function replaceTextFromMessage(text) {
                .replace(':-&gt;:', '→');
 	
 	
-	text = text.replace(/\/forum\//gi, 'https://tiplanet.org/forum/')
+	text = text.replace('[url=/forum/', '[url=https://tiplanet.org/forum/')
 		   .replace(/@everyone|@here/gi, 'Wistaro est un génie!');
 
 	text = bbcodeConvert(text);
