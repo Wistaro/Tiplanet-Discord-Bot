@@ -28,7 +28,7 @@ function keepBotOnlineTip(){
 
   discord2Tchat.botLogin().then(function(data){
 
-    discord2Tchat.sendBotMessage('','', '', '').then(function(data){  
+    discord2Tchat.sendBotMessage('','', '', 'Public').then(function(data){  
       var today = new Date();
       console.log('Wakeup request: Done at '+today.toString());
 
