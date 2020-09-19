@@ -43,5 +43,5 @@ function keepBotOnlineTip(){
     console.log('Requete pour réveiller le bot sur tip = PAS OK!');
   })
 }
-setInterval(keepBotOnlineTip, 20000); 
+setInterval(keepBotOnlineTip, 30000); 
 
