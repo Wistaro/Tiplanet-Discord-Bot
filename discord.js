@@ -119,11 +119,11 @@ function processMessage(receivedMessage) {
     let guild = client.guilds.cache.get('186785204222820352');
     let member = guild.member(receivedMessage.author);
 
-    let nickname = member ? member.displayName : null;
+    let nickname = member ? member.displayName : receivedMessage.author.username;
     let memberWhoSpeak = nickname
 
     let webHookId = receivedMessage.webhookID;
-    
+
     let reg = /<(:[0-9A-Za-z]+:)[0-9]+>/gm;
     let colorTchat = 'black'
 
