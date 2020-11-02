@@ -15,7 +15,7 @@ module.exports.botLogin = function(){
             username:credentials.psdBot,
             password:credentials.passBot,
             autologin:'true',
-            viewonline:'true',
+            viewonline:'false',
             redirect:'',
             login:'Connexion'
             },
