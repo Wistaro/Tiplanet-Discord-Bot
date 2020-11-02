@@ -10,6 +10,40 @@ var discord = require('./discord')
 var lastMessage = 'ok'
 var lastPseudo = 'ok'
 
+String.prototype.replaceAllTxt = function replaceAll(search, replace) { return this.split(search).join(replace); }
+
+
+function convertEmojisFromTipToDiscord(text){
+  text = replaceAll(text, ':p', ':stuck_out_tongue:')
+  text = replaceAll(text, ':(', ':frowning2:')
+  text = replaceAll(text, ':)', ':slight_smile:')
+  text = replaceAll(text, ';)', ':wink:')
+  text = replaceAll(text, ':D', ':sweat_smile:')
+  text = replaceAll(text, ':mmm:', ':rolling_eyes:')
+  text = replaceAll(text, ':o', ':scream:')
+  text = replaceAll(text, ':|', ':neutral_face:')
+  text = replaceAll(text, ':\'(', ':sob:')
+  text = replaceAll(text, '/!\\', ':warning:')
+  text = replaceAll(text, ':?', ':face_with_raised_eyebrow:')
+  text = replaceAll(text, '&gt;:]', ':smiling_imp:')
+  text = replaceAll(text, 'B-)', ':sunglasses:')
+  text = replaceAll(text, ':favorite:', ':heart:')
+  text = replaceAll(text, ':important:', ':exclamation:')
+  text = replaceAll(text, ':help:', ':grey_question:')
+  text = replaceAll(text, ':idea:', ':put_litter_in_its_place:')
+  text = replaceAll(text, '8-)', ':nerd:')
+  text = replaceAll(text, '@', '(at)')
+  return text;  
+}
+
+function replaceAll(str, find, replace) {
+  return str.replace(new RegExp(escapeRegExp(find), 'g'), replace);
+}
+
+function escapeRegExp(string) {
+  return string.replace(/[.*+\-?^${}()|[\]\\]/g, '\\$&'); // $& means the whole matched string
+}
+
 function replaceTextFromMessage(text) {
 	text = text.replace('[img]', '')
 			   .replace('[/img]', '');
@@ -29,8 +63,6 @@ function replaceTextFromMessage(text) {
                .replace('&gt;:]', '/forum/images/smilies/devilish.png')
 
                .replace(':-&gt;:', '→')
-
-               .replace('@', '[at]');
 	
 	
 	text = text.replace('[url=/forum/', '[url=https://tiplanet.org/forum/')
@@ -71,6 +103,7 @@ function getTchatXml(lastDataFromFile){
                         var lastMessage = messageList[messageList.length - 1]['text']['_cdata']
 
                         lastMessage = replaceTextFromMessage(he.decode(lastMessage))
+                        lastMessage = convertEmojisFromTipToDiscord(lastMessage);
 
                         if(lastMessage.includes('/delete')){
                             lastMessage = '**Un message a été supprimé par un Modérateur**';

@@ -8,7 +8,6 @@ var tchat2Discord = require('./tchat2Discord')
 var discordToTchat = require('./discord2Tchat') 
 
 const client = new Discord.Client()
-
 //Discord channels
 const channel_log = '706970986842554468'
 const shoutbox_channel = '708351148813451274'
@@ -116,10 +115,15 @@ function processMessage(receivedMessage) {
 
     let msgClean = receivedMessage.cleanContent.replace(/>([ a-zA-Z0-9\[\]]+)(\n)?\n(@[\[\]a-zA-Z0-9# ]+)(\n)?([ a-zA-Z0-9]+)/gm, "[quote=$3]$1[/quote] : $5");
     msgClean = msgClean.replace(/(\r\n|\n|\r)/gm,"");
-    let memberWhoSpeak = receivedMessage.author.username;
+
+    let guild = client.guilds.cache.get('186785204222820352');
+    let member = guild.member(receivedMessage.author);
+
+    let nickname = member ? member.displayName : null;
+    let memberWhoSpeak = nickname
+
     let webHookId = receivedMessage.webhookID;
-
-
+    
     let reg = /<(:[0-9A-Za-z]+:)[0-9]+>/gm;
     let colorTchat = 'black'
 
