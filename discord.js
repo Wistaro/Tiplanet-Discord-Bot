@@ -41,6 +41,10 @@ client.on('message', (receivedMessage) => {
     return msg.content.toLowerCase() == receivedMessage.content.toLowerCase()
   }
 
+  if(receivedMessage.author == client.user || ( channelSource != shoutbox_channel && webHookId != webhookIdrc) || ( receivedMessage.author.bot && webHookId != webhookIdrc ) ){
+    return
+  }
+
   receivedMessage.channel.awaitMessages(filter, {
     maxMatches: 1, 
     time: 500
@@ -48,14 +52,20 @@ client.on('message', (receivedMessage) => {
       console.log('Le Bot essaie de spam!');
     }).catch(console.error);
 
-  console.log('Message: '+receivedMessage+' webhookID: '+webHookId+' source: '+channelSource);
+  if(receivedMessage.reference != null){
+      receivedMessage.channel.messages.fetch(receivedMessage.reference.messageID).then(function(data){
+        let responseAuthor = data.author.username.toString();
+        let responseMessage = data.content.toString();
+        let prefixFromReply = '[quote="'+responseAuthor+'"]'+responseMessage+'[/quote]';
 
-  if(receivedMessage.author == client.user || ( channelSource != shoutbox_channel && webHookId != webhookIdrc) || ( receivedMessage.author.bot && webHookId != webhookIdrc ) ){
-    
-    return
+        processMessage(prefixFromReply, receivedMessage) 
+      });
 
+  }else{
+    processMessage(' ', receivedMessage) 
   }
-        processMessage(receivedMessage)        
+  
+               
 })
 
 client.on('ready', () => {
@@ -104,7 +114,7 @@ function weebhookPost(data, username, avatar){
     })
 
 }
-function processMessage(receivedMessage) {
+function processMessage(prefix, receivedMessage) {
 
   if (receivedMessage.content.startsWith("!")) {
 
@@ -116,11 +126,17 @@ function processMessage(receivedMessage) {
     let msgClean = receivedMessage.cleanContent.replace(/>([ a-zA-Z0-9\[\]]+)(\n)?\n(@[\[\]a-zA-Z0-9# ]+)(\n)?([ a-zA-Z0-9]+)/gm, "[quote=$3]$1[/quote] : $5");
     msgClean = msgClean.replace(/(\r\n|\n|\r)/gm,"");
 
+    /*
+    WARNING - TODO!:
+      - The reply experimental feature brokes guild.member
+      - I'll fix it asap!
+
     let guild = client.guilds.cache.get('186785204222820352');
     let member = guild.member(receivedMessage.author);
-
     let nickname = member ? member.displayName : receivedMessage.author.username;
-    let memberWhoSpeak = nickname
+    let memberWhoSpeak = nickname*/
+
+    let memberWhoSpeak = receivedMessage.author.username
 
     let webHookId = receivedMessage.webhookID;
 
@@ -163,7 +179,7 @@ function processMessage(receivedMessage) {
 
     }    
 
-    discordToTchat.sendBotMessage(colorTchat,memberWhoSpeak, msgClean, 'Public').then(function(data){  
+    discordToTchat.sendBotMessage(colorTchat,memberWhoSpeak, prefix + msgClean, 'Public').then(function(data){  
 
     }).catch(function(error){
 
