@@ -221,7 +221,7 @@ function getLastMessage(lastMessage, lastPseudo) {
                     break;
                 }
 
-                //discord.weebhookPost(response['message'], response['pseudo']+' '+prefix, 'https://tiplanet.org/forum/avatar.php?id='+response['userId'])
+                discord.weebhookPost(response['message'], response['pseudo']+' '+prefix, 'https://tiplanet.org/forum/avatar.php?id='+response['userId'])
         }
 
         }).catch(function(error){
