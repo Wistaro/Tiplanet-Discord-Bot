@@ -33,6 +33,7 @@ function convertEmojisFromTipToDiscord(text){
   text = replaceAll(text, ':idea:', ':put_litter_in_its_place:')
   text = replaceAll(text, '8-)', ':nerd:')
   text = replaceAll(text, '@', '(at)')
+  text = replaceAll(text, ':troll:', '<:troll:339844417139507200>')
   return text;  
 }
 
