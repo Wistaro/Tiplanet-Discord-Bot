@@ -13,16 +13,7 @@ var discord = require('./discord')
 
 var newsFeed = require('./newsFeed')
 
-const tiBotVersion = "1.6"
-
-
-
-/*http.createServer(function(req, res) {
-    res.writeHead(200, {"Content-Type": "text/plain"});
-    res.end('Discord bot for tiplanet.org, by Wistaro. ');
-}).listen(8080);*/
-
-
+const tiBotVersion = "1.7"
 
 function keepBotOnlineTip(){
 
@@ -43,5 +34,5 @@ function keepBotOnlineTip(){
     console.log('Requete pour réveiller le bot sur tip = PAS OK!');
   })
 }
-setInterval(keepBotOnlineTip, 30000); 
+setInterval(keepBotOnlineTip, 40000); 
 

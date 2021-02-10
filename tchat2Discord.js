@@ -12,7 +12,6 @@ var lastPseudo = 'ok'
 
 String.prototype.replaceAllTxt = function replaceAll(search, replace) { return this.split(search).join(replace); }
 
-
 function convertEmojisFromTipToDiscord(text){
   text = replaceAll(text, ':p', ':stuck_out_tongue:')
   text = replaceAll(text, ':(', ':frowning2:')
@@ -50,25 +49,20 @@ function replaceTextFromMessage(text) {
 			   .replace('[/img]', '');
 				
 	// From TIP (client-side)		
-    	text = text.replace(/merde/gi, 'saperlipopette').replace(/bordel/gi, 'sapristi')
-               .replace(/foutre/gi, 'faire').replace(/chiant/gi, 'très embêtant')
-               .replace(/couille/gi, 'bonbon')
-               .replace(/puta?in+/gi, ["fichtre","diantre"][Math.random()<.5|0])
+    	text = text.replace(/merde/gi, 'saperlipopette')
+      .replace(/bordel/gi, 'sapristi')
+      .replace(/foutre/gi, 'faire')
+      .replace(/chiant/gi, 'très embêtant')
+      .replace(/couille/gi, 'bonbon')
+      .replace(/puta?in+/gi, ["fichtre","diantre"][Math.random()<.5|0])
+      .replace(/pre[nt]ium/gi, 'pre[color=red][u][b]m[/b][/u][/color]ium')
+      .replace(/bonjours+/gi, 'bonjou[color=red][u][b]r[/b][/u][/color]')
+      .replace(/(ce|le|un|du) jeux/gi, '$1 jeu[color=red][s][b]x[/b][/s][/color]')
+      .replace(/enfaite/gi, 'en fait')
+      .replace('&gt;:]', '/forum/images/smilies/devilish.png')
+      .replace(':-&gt;:', '→')
 
-               .replace(/pre[nt]ium/gi, 'pre[color=red][u][b]m[/b][/u][/color]ium')
-               .replace(/bonjours+/gi, 'bonjou[color=red][u][b]r[/b][/u][/color]')
-               .replace(/(ce|le|un|du) jeux/gi, '$1 jeu[color=red][s][b]x[/b][/s][/color]')
-
-               .replace(/enfaite/gi, 'en fait')
-
-               .replace('&gt;:]', '/forum/images/smilies/devilish.png')
-
-               .replace(':-&gt;:', '→')
-	
-	
 	text = text.replace('[url=/forum/', '[url=https://tiplanet.org/forum/')
-		   
-
 	text = bbcodeConvert(text);
 	
     return text;
@@ -102,13 +96,15 @@ function getTchatXml(lastDataFromFile){
                         var userId = messageList[messageList.length - 1]['_attributes']['userID'] 
                         var lastPoster = messageList[messageList.length - 1]['username']['_cdata'] 
                         var lastMessage = messageList[messageList.length - 1]['text']['_cdata']
+                        var lastMessageId = messageList[messageList.length - 1]['_attributes']['id']; 
 
                         lastMessage = replaceTextFromMessage(he.decode(lastMessage))
                         lastMessage = convertEmojisFromTipToDiscord(lastMessage);
 
                         if(lastMessage.includes('/delete')){
                             lastMessage = '**Un message a été supprimé par un Modérateur**';
-                            lastPoster = 'TI-Bot'
+                            lastPoster = 'TI-Bot';
+                            lastMessageId = 0;
                         }
 
 
@@ -121,14 +117,14 @@ function getTchatXml(lastDataFromFile){
                 
                         let lastDataFromFileJSON = JSON.parse(lastDataFromFile);
                             
-
-                        if(lastMessage != lastDataFromFileJSON.message){
+                        if(lastMessageId != lastDataFromFileJSON.messageId){
 
                             var responseArray = new Object();
                             responseArray['pseudo'] = lastPoster;
                             responseArray['message'] = lastMessage;
                             responseArray['userId'] = userId;
                             responseArray['userRole'] = userRole;
+                            responseArray['messageId'] = lastMessageId;
 
                             fs.writeFile('lastMessage.log', JSON.stringify(responseArray) , function (err) {
                                 if (err) throw err;
@@ -142,6 +138,7 @@ function getTchatXml(lastDataFromFile){
                             responseArray['message'] = 'NO_DATA';
                             responseArray['userId'] = 'NO_DATA';
                             responseArray['userRole'] = 'NO_DATA';
+                            responseArray['messageId'] = 'NO_DATA';
 
                             fullfil(responseArray);
                         }
@@ -160,13 +157,12 @@ function getTchatXml(lastDataFromFile){
 
 function getLastMessage(lastMessage, lastPseudo) {
 
-    var lastDataFromFile =  fs.readFileSync('lastMessage.log', 'utf8'); //todo : async function!
+    var lastDataFromFile =  fs.readFileSync('lastMessage.log', 'utf8');
     
         getTchatXml(lastDataFromFile).then(function(response){
     
             if(response['pseudo'] != 'NO_DATA'){
 
-                console.log('response main : pseudo'+response['pseudo']+' || msg : '+response['message'])
 
                 if(response['pseudo'] == 'WistaBot' || response['pseudo'] == 'TI-Bot') return;
 
@@ -233,12 +229,11 @@ function getLastMessage(lastMessage, lastPseudo) {
 function messageUpdater(){
     getLastMessage(lastMessage, lastPseudo)
 }
-setInterval(messageUpdater, 1000); 
+setInterval(messageUpdater, 500); 
 
 function convert2json(xmlData){
     return convert.xml2json(xmlData, {compact: true, spaces: 0});
 }
-
 module.exports = {
     getLastMessage, 
     getTchatXml
