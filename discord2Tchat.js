@@ -4,93 +4,93 @@ var config = require('./config')
 
 var cookieJar = request.jar();
 
-module.exports.botLogin = function(){
-    
-    return new Promise(function(fullfil, reject){
+module.exports.botLogin = function() {
 
-        request.post({ 
-            
+    return new Promise(function(fullfil, reject) {
+
+        request.post({
+
             url: config.websiteLoginUrl,
             form: {
-            username:credentials.psdBot,
-            password:credentials.passBot,
-            autologin:'true',
-            viewonline:'false',
-            redirect:'',
-            login:'Connexion'
+                username: credentials.psdBot,
+                password: credentials.passBot,
+                autologin: 'true',
+                viewonline: 'false',
+                redirect: '',
+                login: 'Connexion'
             },
             jar: cookieJar
-          
-          }, function(err, httpResponse, body) {
 
-                if(err){
+        }, function(err, httpResponse, body) {
 
-                    reject(err)
+            if (err) {
 
-                }else{
+                reject(err)
 
-                    fullfil('ok')
-                    
-                }
-            })
-        });
+            } else {
+
+                fullfil('ok')
+
+            }
+        })
+    });
 }
 
-module.exports.botLogout = function(){
-    
-    return new Promise(function(fullfil, reject){
+module.exports.botLogout = function() {
 
-        request.post({ 
-            
+    return new Promise(function(fullfil, reject) {
+
+        request.post({
+
             url: config.websiteLogoutUrl,
             form: {
-            username:credentials.psdBot,
-            password:credentials.passBot,
+                username: credentials.psdBot,
+                password: credentials.passBot,
             },
             jar: cookieJar
-          
-          }, function(err, httpResponse, body) {
 
-                if(err){
+        }, function(err, httpResponse, body) {
 
-                    reject(err)
+            if (err) {
 
-                }else{
+                reject(err)
 
-                    fullfil('ok')
-                }
-            })
-        });
+            } else {
+
+                fullfil('ok')
+            }
+        })
+    });
 }
-module.exports.sendBotMessage = function(colorTchat,memberWhoSpeak, msgClean, channel){
-    
-    return new Promise(function(fullfil, reject){
+module.exports.sendBotMessage = function(colorTchat, memberWhoSpeak, msgClean, channel) {
 
-      let text2post;
-      
-      if (msgClean == '') {
-        text2post = ''
-      }else{
-        text2post = '[b][color='+colorTchat+']'+memberWhoSpeak+'[/color][/b]: [color=block]'+msgClean+'[/color]'
-      }
+    return new Promise(function(fullfil, reject) {
+
+        let text2post;
+
+        if (msgClean == '') {
+            text2post = ''
+        } else {
+            text2post = '[b][color=' + colorTchat + ']' + memberWhoSpeak + '[/color][/b]: [color=block]' + msgClean + '[/color]'
+        }
         request.post({
             url: config.tchatPostUrl,
             form: {
-              channelName: channel,
-              text: text2post
+                channelName: channel,
+                text: text2post
             },
-      
+
             jar: cookieJar
-      
-          }, function(err, httpResponse, body) {
+
+        }, function(err, httpResponse, body) {
             if (!err) {
-      
-              fullfil('ok');
-      
+
+                fullfil('ok');
+
             } else {
-              console.log("error" + err)
-              reject(err)
+                console.log("error" + err)
+                reject(err)
             }
-          }) 
-        });
+        })
+    });
 }
