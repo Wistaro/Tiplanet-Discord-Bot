@@ -82,11 +82,11 @@ module.exports.sendBotMessage = function (
 
 				jar: cookieJar,
 			},
-			function (err, httpResponse, body) {
+			function (err) {
 				if (!err) {
 					fullfil("ok");
 				} else {
-					console.log("error" + err);
+					console.log(`error : ${err}`);
 					reject(err);
 				}
 			}

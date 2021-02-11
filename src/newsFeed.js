@@ -9,7 +9,7 @@ var watcher_newArticles = new Watcher(newArticlesFeed, 10);
 
 watcher_newposts
 	.start()
-	.then(function (entries) {
+	.then(function () {
 		console.error("Newsfeed (new messages) engine started");
 	})
 	.catch(function (error) {
@@ -19,15 +19,7 @@ watcher_newposts
 watcher_newposts.on("new entries", function (entries) {
 	entries.forEach(function (entry) {
 		discord.sendEmbed(
-			"[" +
-				entry.title +
-				"](" +
-				entry.link +
-				")\n **Auteur:** " +
-				entry.author +
-				"\n" +
-				"**Date:**:" +
-				entry.date,
+			`[${entry.title}](${entry.link})\n **Auteur:** ${entry.author} \n **Date:**: ${entry.date}`,
 			discord.newsChannel
 		);
 	});
@@ -35,7 +27,7 @@ watcher_newposts.on("new entries", function (entries) {
 
 watcher_newArticles
 	.start()
-	.then(function (entries) {
+	.then(function () {
 		console.error("Newsfeed (new articles) engine started");
 	})
 	.catch(function (error) {
@@ -45,15 +37,7 @@ watcher_newArticles
 watcher_newArticles.on("new entries", function (entries) {
 	entries.forEach(function (entry) {
 		discord.sendEmbed(
-			"[" +
-				entry.title +
-				"](" +
-				entry.link +
-				")\n **Auteur:** " +
-				entry.author +
-				"\n" +
-				"**Date:**:" +
-				entry.date,
+			`[${entry.title}](${entry.link})\n **Auteur:** ${entry.author} \n **Date:**: ${entry.date}`,
 			discord.newArticlesChannel
 		);
 	});

@@ -1,8 +1,11 @@
-module.exports.host = 'tiplanet.org';
+const config = {
+	host: "tiplanet.org",
 
-module.exports.websiteLoginUrl = 'https://tiplanet.org/forum/ucp.php?mode=login'
-module.exports.websiteLogoutUrl = 'https://tiplanet.org/forum/ucp.php?mode=logout';
+	websiteLoginUrl: "https://tiplanet.org/forum/ucp.php?mode=login",
+	websiteLogoutUrl: "https://tiplanet.org/forum/ucp.php?mode=logout",
 
-module.exports.tchatPostUrl = 'https://tiplanet.org/forum/chat/?ajax=true'
-module.exports.getTchatUrl = 'https://tiplanet.org/forum/chat/?ajax=true&shoutbox=true';
+	tchatPostUrl: "https://tiplanet.org/forum/chat/?ajax=true",
+	getTchatUrl: "https://tiplanet.org/forum/chat/?ajax=true&shoutbox=true",
+};
 
+module.exports = config;

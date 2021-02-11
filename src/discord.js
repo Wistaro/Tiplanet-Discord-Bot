@@ -212,8 +212,7 @@ function handleCommand(receivedMessage) {
 				})
 				.catch(function (error) {
 					sendEmbed(
-						"Impossible de passer le bot en ligne sur le tchat de tiplanet: " +
-							error,
+						`Impossible de passer le bot en ligne sur le tchat de tiplanet: ${error}`,
 						botLogChannel
 					);
 				});
@@ -230,8 +229,7 @@ function handleCommand(receivedMessage) {
 					client.channels.cache
 						.get(shoutbox_channel)
 						.send(
-							"Impossible de passer le bot en hors ligne sur le tchat de tiplanet: " +
-								error
+							`Impossible de passer le bot en hors ligne sur le tchat de tiplanet: ${error}`
 						);
 				});
 		} else if (arguments[0] == "postRules") {

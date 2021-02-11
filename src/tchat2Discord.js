@@ -82,10 +82,10 @@ function getTchatXml(lastDataFromFile) {
 			config.getTchatUrl,
 			{
 				json: {
-					Host: "tiplanet.org",
+					Host: config.host,
 				},
 			},
-			(error, res, body) => {
+			(error, body) => {
 				if (error) {
 					console.error(error);
 					reject(error);
@@ -246,9 +246,8 @@ function getLastMessage(lastMessage, lastPseudo) {
 
 				discord.weebhookPost(
 					response["message"],
-					response["pseudo"] + " " + prefix,
-					"https://tiplanet.org/forum/avatar.php?id=" +
-						response["userId"]
+					`${response["pseudo"]} ${prefix}`,
+					`https://tiplanet.org/forum/avatar.php?id=${response["userId"]}`
 				);
 			}
 		})
