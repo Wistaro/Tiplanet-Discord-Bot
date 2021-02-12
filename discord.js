@@ -28,7 +28,7 @@ const roleProg = '339842895333031936';
 
 const webhookIdrc = '753785049970901114'
 
-const webhookUrl = 'https://discordapp.com/api/webhooks/708351218388435015/PWLB31ajkbpSuGMV9HF55VBdq0v7SRMzOKEuOC8wvfz8Ya_lsuDI2lTmoL1DcbYW3f2C';
+const webhookUrl = credentials.webhookUrl;
 
 
 
