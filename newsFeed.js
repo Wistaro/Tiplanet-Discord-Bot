@@ -19,7 +19,7 @@ watcher_newposts
 watcher_newposts.on('new entries', function(entries) {
     entries.forEach(function(entry) {
         discord.sendEmbed('[' + entry.title + '](' + entry.link + ')\n **Auteur:** ' + entry.author + '\n' + '**Date:**:' + entry.date, discord.newsChannel);
-        console.log("Nouvelle news! "+entry);
+        console.log(getDateTime()+" Nouveau message sur le forum ("+entry.title+" - de "+entry.author+")");
     })
 })
 
@@ -35,6 +35,31 @@ watcher_newArticles
 watcher_newArticles.on('new entries', function(entries) {
     entries.forEach(function(entry) {
         discord.sendEmbed('[' + entry.title + '](' + entry.link + ')\n **Auteur:** ' + entry.author + '\n' + '**Date:**:' + entry.date, discord.newArticlesChannel);
-        console.log("Nouveau message sur le forum! "+entry);
+        console.log(getDateTime()+" Nouvel article ("+entry.title+" - de "+entry.author+")");
     })
 })
+
+function getDateTime() {
+
+    var date = new Date();
+
+    var hour = date.getHours();
+    hour = (hour < 10 ? "0" : "") + hour;
+
+    var min  = date.getMinutes();
+    min = (min < 10 ? "0" : "") + min;
+
+    var sec  = date.getSeconds();
+    sec = (sec < 10 ? "0" : "") + sec;
+
+    var year = date.getFullYear();
+
+    var month = date.getMonth() + 1;
+    month = (month < 10 ? "0" : "") + month;
+
+    var day  = date.getDate();
+    day = (day < 10 ? "0" : "") + day;
+
+    return year + "/" + month + "/" + day + " - " + hour + ":" + min + ":" + sec;
+
+}
