@@ -4,9 +4,6 @@ var request = require('request')
 var credentials = require('./credentials')
 var config = require('./config')
 
-var tchat2Discord = require('./tchat2Discord')
-var discordToTchat = require('./discord2Tchat')
-
 const client = new Discord.Client()
 //Discord channels
 const channel_log = '706970986842554468'
@@ -36,6 +33,7 @@ client.on('message', (receivedMessage) => {
 
     let webHookId = receivedMessage.webhookID;
     let channelSource = receivedMessage.channel.id;
+    let MsgReference = receivedMessage.reference;
 
     let filter = msg => {
         return msg.content.toLowerCase() == receivedMessage.content.toLowerCase()
@@ -52,19 +50,6 @@ client.on('message', (receivedMessage) => {
         console.log('Le Bot essaie de spam!');
     }).catch(console.error);
 
-    if (receivedMessage.reference != null) {
-        receivedMessage.channel.messages.fetch(receivedMessage.reference.messageID).then(function(data) {
-            let responseAuthor = data.author.username.toString();
-            let responseMessage = data.content.toString();
-            let prefixFromReply = '[quote="' + responseAuthor + '"]' + responseMessage + '[/quote]';
-
-            processMessage(prefixFromReply, receivedMessage)
-        });
-
-    } else {
-        processMessage(' ', receivedMessage)
-    }
-
 
 })
 
@@ -72,15 +57,6 @@ client.on('ready', () => {
 
     client.user.setStatus("available")
     console.log("TI Bot is ready! v4")
-
-    discordToTchat.botLogin().then(function(data) {
-
-        sendEmbed("Le Bot est **en ligne** sur le tchat de TIplanet!", botLogChannel);
-
-        //discordToTchat.sendBotMessage('black','Info', '[i]Connection au serveur Discord effectuée.[/i]', 'Public').then(function(data){ }).catch(function(err){})
-
-
-    })
 })
 
 function sendEmbed(message, channel) {
@@ -122,73 +98,6 @@ function processMessage(prefix, receivedMessage) {
     if (receivedMessage.content.startsWith("!")) {
 
         handleCommand(receivedMessage)
-
-    } else {
-        let serverGuild = receivedMessage.guild;
-
-        let msgClean = receivedMessage.cleanContent.replace(/>([ a-zA-Z0-9\[\]]+)(\n)?\n(@[\[\]a-zA-Z0-9# ]+)(\n)?([ a-zA-Z0-9]+)/gm, "[quote=$3]$1[/quote] : $5");
-        msgClean = msgClean.replace(/(\r\n|\n|\r)/gm, "");
-
-        /*
-        WARNING - TODO!:
-          - The reply experimental feature brokes guild.member
-          - I'll fix it asap!
-
-        let guild = client.guilds.cache.get('186785204222820352');
-        let member = guild.member(receivedMessage.author);
-        let nickname = member ? member.displayName : receivedMessage.author.username;
-        let memberWhoSpeak = nickname*/
-
-        let memberWhoSpeak = receivedMessage.author.username
-
-        let webHookId = receivedMessage.webhookID;
-
-        let reg = /<(:[0-9A-Za-z]+:)[0-9]+>/gm;
-        let colorTchat = 'black'
-
-        msgClean = msgClean.replace(reg, "$1");
-
-        if (webHookId != webhookIdrc) {
-
-            if (receivedMessage.member.roles.cache.has(roleAdmin)) {
-
-                colorTchat = 'red';
-
-            } else if (receivedMessage.member.roles.cache.has(roleModoG)) {
-
-                colorTchat = 'green';
-
-            } else if (receivedMessage.member.roles.cache.has(roleModo)) {
-
-                colorTchat = '#62C927';
-
-            } else if (receivedMessage.member.roles.cache.has(roleRedac)) {
-
-                colorTchat = 'blue';
-
-            } else if (receivedMessage.member.roles.cache.has(roleAnim)) {
-
-                colorTchat = '#3D58D5';
-
-            } else if (receivedMessage.member.roles.cache.has(roleProg)) {
-
-                colorTchat = '#F730CD';
-            }
-
-        } else {
-
-            colorTchat = 'black';
-            memberWhoSpeak = '[IRC] ' + memberWhoSpeak;
-
-        }
-
-        discordToTchat.sendBotMessage(colorTchat, memberWhoSpeak, prefix + msgClean, 'Public').then(function(data) {
-
-        }).catch(function(error) {
-
-            client.channels.cache.get(shoutbox_channel).send('Envoie du message impossible vers le tchat de tiplanet:  ' + error);
-        })
-
     }
 }
 
@@ -203,27 +112,7 @@ function handleCommand(receivedMessage) {
 
     if (primaryCommand == 'tibot') {
 
-        if (arguments[0] == 'login') {
-
-            discordToTchat.botLogin().then(function(data) {
-
-                sendEmbed("Le Bot est désormais **en ligne** sur le tchat de TIplanet!", botLogChannel)
-
-            }).catch(function(error) {
-
-                sendEmbed('Impossible de passer le bot en ligne sur le tchat de tiplanet: ' + error, botLogChannel)
-            })
-
-        } else if (arguments[0] == 'logout') {
-
-            discordToTchat.botLogout().then(function(data) {
-
-                sendEmbed("Le Bot est désormais **HORS LIGNE** sur le tchat de TIplanet!", botLogChannel)
-
-            }).catch(function(error) {
-                client.channels.cache.get(shoutbox_channel).send('Impossible de passer le bot en hors ligne sur le tchat de tiplanet: ' + error);
-            })
-        } else if (arguments[0] == 'postRules') {
+        if (arguments[0] == 'postRules') {
 
             if (receivedMessage.member.roles.cache.has(roleAdmin) || receivedMessage.member.roles.cache.has(roleModoG)) {
 

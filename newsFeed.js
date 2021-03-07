@@ -19,6 +19,7 @@ watcher_newposts
 watcher_newposts.on('new entries', function(entries) {
     entries.forEach(function(entry) {
         discord.sendEmbed('[' + entry.title + '](' + entry.link + ')\n **Auteur:** ' + entry.author + '\n' + '**Date:**:' + entry.date, discord.newsChannel);
+        console.log("Nouvelle news! "+entry);
     })
 })
 
@@ -34,5 +35,6 @@ watcher_newArticles
 watcher_newArticles.on('new entries', function(entries) {
     entries.forEach(function(entry) {
         discord.sendEmbed('[' + entry.title + '](' + entry.link + ')\n **Auteur:** ' + entry.author + '\n' + '**Date:**:' + entry.date, discord.newArticlesChannel);
+        console.log("Nouveau message sur le forum! "+entry);
     })
 })
