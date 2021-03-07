@@ -13,6 +13,7 @@ const botLogChannel = '754050294387572817'
 const rulesChannel = '754336130677342228'
 const botInfoChannel = '754352846542995526'
 const newArticlesChannel = '754399094952165406'
+const discordNewsChannel = '683367616252739660';
 
 //Discord roles
 const roleAdmin = '415190599780532224';
@@ -22,6 +23,7 @@ const rolePremium = '339841307939700747';
 const roleRedac = '339839953515053066';
 const roleAnim = '339840793357451275';
 const roleProg = '339842895333031936';
+const roleRespDiscord = '186785546457186305';
 
 const webhookIdrc = '753785049970901114'
 
@@ -35,22 +37,7 @@ client.on('message', (receivedMessage) => {
     let channelSource = receivedMessage.channel.id;
     let MsgReference = receivedMessage.reference;
 
-    let filter = msg => {
-        return msg.content.toLowerCase() == receivedMessage.content.toLowerCase()
-    }
-
-    if (receivedMessage.author == client.user || (channelSource != shoutbox_channel && webHookId != webhookIdrc) || (receivedMessage.author.bot && webHookId != webhookIdrc)) {
-        return
-    }
-
-    receivedMessage.channel.awaitMessages(filter, {
-        maxMatches: 1,
-        time: 500
-    }).then(collected => {
-        console.log('Le Bot essaie de spam!');
-    }).catch(console.error);
-
-
+    processMessage(receivedMessage);
 })
 
 client.on('ready', () => {
@@ -93,7 +80,7 @@ function weebhookPost(data, username, avatar) {
 
 }
 
-function processMessage(prefix, receivedMessage) {
+function processMessage(receivedMessage) {
 
     if (receivedMessage.content.startsWith("!")) {
 
@@ -114,7 +101,7 @@ function handleCommand(receivedMessage) {
 
         if (arguments[0] == 'postRules') {
 
-            if (receivedMessage.member.roles.cache.has(roleAdmin) || receivedMessage.member.roles.cache.has(roleModoG)) {
+            if (receivedMessage.member.roles.cache.has(roleAdmin) || receivedMessage.member.roles.cache.has(roleRespDiscord)) {
 
                 const embed = new Discord.MessageEmbed()
                     .setAuthor("Discord rules")
@@ -128,7 +115,7 @@ function handleCommand(receivedMessage) {
 
         } else if (arguments[0] == 'postBotInfo') {
 
-            if (receivedMessage.member.roles.cache.has(roleAdmin) || receivedMessage.member.roles.cache.has(roleModoG)) {
+            if (receivedMessage.member.roles.cache.has(roleAdmin) || receivedMessage.member.roles.cache.has(roleRespDiscord)) {
 
                 const embed = new Discord.MessageEmbed()
                     .setAuthor("Informations sur les Bots / Bots informations")
@@ -140,12 +127,25 @@ function handleCommand(receivedMessage) {
                 });
             }
 
+        }else if (arguments[0] == 'postNews') {
+
+            if (receivedMessage.member.roles.cache.has(roleAdmin) || receivedMessage.member.roles.cache.has(roleRespDiscord)) {
+
+                const embed = new Discord.MessageEmbed()
+                    .setAuthor("Actualité Discord")
+                    .setColor("#EF1616")
+                    .setDescription(receivedMessage.toString().substring(18))
+
+                client.channels.cache.get(discordNewsChannel).send({
+                    embed
+                });
+            }
+
         }
     }
 }
 
-
-client.login(credentials.discordBotToken)
+client.login(credentials.discordBotToken);
 
 module.exports = {
     sendMessage,

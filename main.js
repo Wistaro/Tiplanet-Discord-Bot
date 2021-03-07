@@ -10,3 +10,4 @@ var discord = require('./discord')
 var newsFeed = require('./newsFeed')
 
 const tiBotVersion = "1.8"
+
